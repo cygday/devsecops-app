@@ -48,9 +48,11 @@ jobs:
         head: HEAD
 
     # 6. Build Docker Image Locally
-    - name: Build Local Docker Image
+    - name: Build Local Docker Imagea
+      env:
+        REACR_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
       run: |
-        docker build -t react-app:test .
+        docker build-arg REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} -t react-app:test .
 
     # 7. Container Scan: Ensure base Nginx/Linux OS contains no active threats
     - name: Container Image Scan with Trivy
