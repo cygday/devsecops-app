@@ -10,6 +10,9 @@ jobs:
   security-and-build:
     name: Build and Secure React App
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./devsecops-app
 
     steps:
     # 1. Fetch code from GitHub
@@ -22,6 +25,7 @@ jobs:
       with:
         node-version: 24
         cache: 'npm'
+        cache-dependency-path: devsecops-app/package-lock.json
 
     # 3. Code Cleanliness (Linting)
     - name: Install & Run Lint
