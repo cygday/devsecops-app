@@ -11,22 +11,17 @@ jobs:
     name: Build and Secure React App
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./devsecops-app
-
     steps:
     # 1. Fetch code from GitHub
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    # 2. Setup Node.js environment
+    # 2. Setup Node.js (Upgraded to Node 24 to match GitHub runner standards)
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 24
         cache: 'npm'
-        cache-dependency-path: './devsecops-app/package-lock.json'
 
     # 3. Code Cleanliness (Linting)
     - name: Install & Run Lint
@@ -39,9 +34,9 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
-        scan-ref: './frontend'
+        scan-ref: '.'
         format: 'table'
-        exit-code: '1' # Fails the pipeline if severe vulnerabilities exist
+        exit-code: '1'
         severity: 'CRITICAL,HIGH'
 
     # 5. Secrets Scan: Prevent exposed passwords and API keys
@@ -52,15 +47,14 @@ jobs:
         base: ${{ github.event.repository.default_branch }}
         head: HEAD
 
-    # 6. Build Docker Image Locally
-    - name: Build Local Docker Imagea
+    # 6. Build Docker Image Locally & Inject Secret
+    - name: Build Local Docker Image
       env:
         REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
       run: |
         docker build --build-arg REACT_APP_API_URL="$REACT_APP_API_URL" -t react-app:test .
-      working-directory: ./
 
-    # 7. Container Scan: Ensure base Nginx/Linux OS contains no active threats
+    # 7. Container Scan
     - name: Container Image Scan with Trivy
       uses: aquasecurity/trivy-action@master
       with:
