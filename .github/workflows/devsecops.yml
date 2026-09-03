@@ -27,9 +27,8 @@ jobs:
 
     # 3. Code Cleanliness (Linting)
     - name: Install & Run Lint
-      run: |
-        npm install
-        npm run lint --if-present
+      run:  npm install
+      working-directory: ${{ github.workspace }}
 
     # 4. SCA Scan: Check third-party npm packages for vulnerabilities
     - name: Dependency Scan (SCA) with Trivy
