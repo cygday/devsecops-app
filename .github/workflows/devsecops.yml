@@ -43,8 +43,6 @@ jobs:
       uses: trufflesecurity/trufflehog@main
       with:
         path: ./
-        base: ''
-        head: HEAD
 
     # 6. Build Docker Image Locally & Inject Secret
     - name: Build Local Docker Image
