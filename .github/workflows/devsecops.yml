@@ -15,6 +15,8 @@ jobs:
     # 1. Fetch code from GitHub
     - name: Checkout Source Code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     # 2. Setup Node.js (Upgraded to Node 24 to match GitHub runner standards)
     - name: Setup Node.js
@@ -41,7 +43,7 @@ jobs:
       uses: trufflesecurity/trufflehog@main
       with:
         path: ./
-        base: ${{ github.event.repository.default_branch }}
+        base: ''
         head: HEAD
 
     # 6. Build Docker Image Locally & Inject Secret
